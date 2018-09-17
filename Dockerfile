@@ -40,26 +40,13 @@ RUN apt-get install -y \
 	libavformat-dev \
 	liblua5.3-dev
 
-RUN echo deb http://deb.debian.org/debian testing main >> /etc/apt/sources.list && \
-	apt-get update && \
-	apt-cache policy libmicrohttpd-dev libnice-dev libssl-dev libopus-dev
-
-RUN apt-get install -y \
-	libmicrohttpd-dev=0.9.59-1 \
-	libjansson-dev=2.11-1 \
-	libcurl4-openssl-dev=7.61.0-1 \
-	libglib2.0-dev=2.56.1-2 \
-	libsrtp2-dev=2.2.0-1 \
-	libssl-dev=1.1.0h-4 \
-	libopus-dev=1.3~beta+20180518-1
-
 RUN rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p /usr/src/janus /var/janus/janus/log /var/janus/janus/data && \
 	cd /usr/src/janus && \
-	wget -c https://github.com/meetecho/janus-gateway/archive/v0.4.3.tar.gz && \
-	tar -xzf v0.4.3.tar.gz && \
-	cd janus-gateway-0.4.3 && \
+	git clone https://github.com/meetecho/janus-gateway.git 0.4.2-master-ca756d1 && \
+    cd 0.4.2-master-ca756d1 && \
+    git checkout ca756d17cb1b58cae93c71fce20ef49cbe37c00a && \
 	sh autogen.sh && \
 	./configure --prefix=/var/janus/janus --enable-post-processing --disable-rabbitmq --disable-data-channels && \
 	make && make install && make configs && \
